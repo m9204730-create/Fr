@@ -1,3 +1,4 @@
+// 1. Оновлений масив товарів із доданим полем 'image' для кожного продукту
 const products = [
   {
     id: 1,
@@ -5,6 +6,7 @@ const products = [
     category: "Fury 160",
     price: 173,
     inStock: true,
+    image: "images/fury-03-ice-chartreuse-square.jpg", // Шлях до картинки-заглушки
     color: "#3bff4a",
     colors: ["#3bff4a","#00bfff","#ff6b00"]
   },
@@ -14,6 +16,7 @@ const products = [
     category: "Fury 160",
     price: 173,
     inStock: false,
+    image: "images/10ecf86-1777974837365-square-400x400.jpg", 
     color: "#f5c842",
     colors: ["#f5c842","#ff9800","#fff"]
   },
@@ -23,6 +26,7 @@ const products = [
     category: "Fury 160",
     price: 173,
     inStock: true,
+    image: "images/fury-29-motor-oil-red-square.jpg", 
     color: "#c8a000",
     colors: ["#c8a000","#d44","#8b6914"]
   },
@@ -32,6 +36,7 @@ const products = [
     category: "Dragonfire 120",
     price: 184,
     inStock: true,
+    image: "images/8cffd6-1773695390049-square.jpg", 
     color: "#38b2e0",
     colors: ["#38b2e0","#f97316","#fff"]
   },
@@ -41,6 +46,7 @@ const products = [
     category: "Fury 160",
     price: 173,
     inStock: true,
+    image: "images/fury-34-cream-lox-square.jpg", 
     color: "#ff69b4",
     colors: ["#ff69b4","#fff","#c0a0c0"]
   },
@@ -50,6 +56,7 @@ const products = [
     category: "Fury 160",
     price: 173,
     inStock: true,
+    image: "images/72c3e8-1775887884384-square (1).jpg", 
     color: "#ccc",
     colors: ["#ccc","#888","#fff"]
   },
@@ -59,6 +66,7 @@ const products = [
     category: "Fury 160",
     price: 173,
     inStock: true,
+    image: "images/fury-18-green-lox-square (2.jpg", 
     color: "#4ade80",
     colors: ["#4ade80","#166534","#fff"]
   },
@@ -68,31 +76,19 @@ const products = [
     category: "Fury 160",
     price: 173,
     inStock: true,
+    image: "images/9bd539-1775712063943-square.jpg", 
     color: "#f472b6",
     colors: ["#f472b6","#fff","#be185d"]
   }
 ];
- 
+
 let cartTotal = 0;
- 
-function fishSVG(p) {
-  const [c1, c2, c3] = p.colors;
-  return `<svg width="150" height="90" viewBox="0 0 150 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M20 45 Q55 15 95 30 Q115 38 130 45 Q115 52 95 60 Q55 75 20 45Z" fill="${c1}" stroke="${c2}" stroke-width="1.2" opacity=".95"/>
-    <path d="M20 45 L5 30 L10 45 L5 60 Z" fill="${c1}" opacity=".7"/>
-    <path d="M55 30 Q75 25 100 35" stroke="${c3}" stroke-width="1.5" fill="none" opacity=".6"/>
-    <path d="M55 60 Q75 65 100 55" stroke="${c3}" stroke-width="1.5" fill="none" opacity=".6"/>
-    <circle cx="112" cy="40" r="7" fill="white"/>
-    <circle cx="114" cy="40" r="3.5" fill="#1a1a2e"/>
-    <circle cx="115" cy="39" r="1.5" fill="white"/>
-    <path d="M75 30 L82 18 L92 30" fill="${c2}" opacity=".5"/>
-    <path d="M75 60 L82 72 L92 60" fill="${c2}" opacity=".5"/>
-    <path d="M100 28 L115 22 L118 30" fill="${c2}" opacity=".4"/>
-    <path d="M100 62 L115 68 L118 60" fill="${c2}" opacity=".4"/>
-    <ellipse cx="50" cy="45" rx="4" ry="10" fill="${c2}" opacity=".25" transform="rotate(-10 50 45)"/>
-  </svg>`;
+
+function getProductImage(p) {
+  const imgSrc = p.image ? p.image : 'images/default-lure.png';
+  return `<img src="${imgSrc}" alt="${p.name}" class="product-img">`;
 }
- 
+
 function renderCards(list) {
   const grid = document.getElementById('productsGrid');
   grid.innerHTML = list.map(p => `
@@ -101,7 +97,7 @@ function renderCards(list) {
         ${p.inStock ? 'В наявності' : 'Розпродано'}
       </span>
       <div class="product-img-wrap">
-        ${fishSVG(p)}
+        ${getProductImage(p)}
         <div class="product-actions">
           <div class="action-icon" title="До списку бажань">
             <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -131,10 +127,10 @@ function renderCards(list) {
     </div>
   `).join('');
 }
- 
+
 let currentPage = 0;
 const perPage = 6;
- 
+
 function showPage(page, btn) {
   currentPage = page;
   document.querySelectorAll('.slider-dot').forEach(d => d.classList.remove('active'));
@@ -142,28 +138,28 @@ function showPage(page, btn) {
   const start = page * perPage;
   renderCards(products.slice(start, start + perPage));
 }
- 
+
 function addToCart(id, name, e) {
   e.stopPropagation();
   cartTotal++;
   const countEl = document.getElementById('cart-count');
   countEl.textContent = cartTotal;
   countEl.style.display = 'flex';
- 
+
   const popup = document.getElementById('cartPopup');
   document.getElementById('cartPopupMsg').textContent = `"${name.substring(0,40)}..." додано до кошика`;
   popup.classList.add('show');
   clearTimeout(popup._timer);
   popup._timer = setTimeout(() => popup.classList.remove('show'), 3000);
 }
- 
+
 renderCards(products.slice(0, perPage));
- 
+
 let heroSlide = 0;
 const heroDots = document.querySelectorAll('.hero-dot');
 const heroTitles = ['Fury', 'Crazy Fox', 'Dragonfire'];
 const heroBadges = ['бестселлер', 'власне виробництво', 'новинка'];
- 
+
 setInterval(() => {
   heroDots[heroSlide].classList.remove('active');
   heroSlide = (heroSlide + 1) % 3;
@@ -171,7 +167,7 @@ setInterval(() => {
   document.querySelector('.hero-title').textContent = heroTitles[heroSlide];
   document.querySelector('.hero-badge').textContent = heroBadges[heroSlide];
 }, 4000);
- 
+
 heroDots.forEach((d, i) => {
   d.addEventListener('click', () => {
     heroDots[heroSlide].classList.remove('active');
@@ -181,8 +177,7 @@ heroDots.forEach((d, i) => {
     document.querySelector('.hero-badge').textContent = heroBadges[i];
   });
 });
- 
-// cat pills scroll on drag
+
 const track = document.getElementById('catTrack');
 let isDown = false, startX, scrollLeft;
 track.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - track.offsetLeft; scrollLeft = track.scrollLeft; });
