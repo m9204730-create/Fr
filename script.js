@@ -128,6 +128,12 @@ function showPage(name) {
 
 function goHome() { showPage('home'); }
 
+document.getElementById('buyNowBtn')?.addEventListener('click', () => {
+  if (typeof gtag === 'function') {
+    gtag('event', 'click_buy_now_btn');
+  }
+});
+
 document.getElementById('searchInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') doSearch();
 });
